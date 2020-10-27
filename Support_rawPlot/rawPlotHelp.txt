@@ -1,0 +1,308 @@
+PLOT RAW X-Y DATA FILE WITH STANDARD OR CUSTOM COLORMAP:
+
+OVERVIEW:
+This program was originally designed to manipulate raw data files generated
+by the Chaotic Spokes program. However, the program can load and plot any 
+two-column (x,y) data file and plot/colorize the data. 
+
+The main program allows the user:
+1) Load the raw data file.
+2) Set/modify the row of data to start/stop the plotting.
+3) Set a radio button selection for either a standard Matplotlib colormap, 
+   or one of two custom-made colormap types.
+4) Set the name of the standard colormap.
+5) Load, update, or create a Linear Segmented custom colormap file.
+6) Load, update, or create a Color List custom colormap file.
+
+Default program configuration data is contained in the rawPlotConfig.py 
+text file which is "imported" into the main program.
+
+MAIN GUI:
+All "Raw Data Files" are loaded via the "Load" dropdown menu. Hand-edits
+of the "Raw File Name" on the main GUI is not supported; only loads via
+the "Load" menu are supported.
+
+A short extract of a typical raw data file follows (without the **s).
+The first (second) column is the x values (y values).
+********File contents follows********
+-8.402299254988e+01 -2.620001695620e+02
+-2.163943502397e+02 -1.259783891422e+02
+-5.365623890962e+01 +6.392351955170e+00
++4.323145405380e+01 -1.563465088608e+02
+-1.871513369211e+02 -2.532356117581e+02
+-1.858970849142e+02 -2.285376326867e+01
+********File contents preceeds********
+The number of decimal places of the data items is flexible. However,
+the data file must contain two columns, with the x-values in the
+first column. 
+
+The number of the data row to start/stop the plotting is given default 
+values contained in the configuration data file. (The default values should 
+insure that the complete set of raw data is displayed on the first plot.) 
+The user can modify the start/stop values to explore features of the 
+data set on any plot runs.
+
+A default dot size value (in units**2) is given in the configuration data 
+file. This value can also be altered by hand by the user. (The topic 
+of dot size in Matplotlib scatter plots is a confusing topic with many, many
+comments/opinions on many, many sites. Suffice to say that the actual
+detail of this topic is relatively unimportant for this program. Additional
+discusion is provided below in the USAGE section.)
+
+The colormap type is designated by the radio button that defaults to
+the "Standard" colormap (CMAP). When set to "Standard", the user must enter
+a colormap name in the entry line to the right, where the name is one of 
+the standard Matplotlib maps. Three examples from a list of over 100 are: 
+hsv; jet; OrRd.
+
+Similar to the Raw Data File, an existing custom colormap (Linear Segmented
+or Color List ) can only be loaded via the "Load" menu. When loaded, the 
+colormap radio button is set to the appropriate custom colormap type.
+Thereafter, if both the standard and custom entry boxes contain names, the 
+user may switch the radio button by hand.
+
+Briefly, the "CustomMap" pulldown menu allows the user to:
+1) Load/edit an existing custom colormap text file.
+2) Create/save a custom colormap. 
+Additional details follow in the CUSTOM COLORMAP FILES section below.
+
+The Plot button will pull the items from the GUI entry boxes, and perform 
+a scatter plot of the file data, applying the specified colormap. 
+Simultaneously, on the terminal display, the number of rows in the raw 
+data file is printed, as well as the min/max x and y values from the data 
+that went into the plot. Note that the printed min/max values represent 
+the values from the data range specified by the start/stop entries.
+These items can be useful for modifying selections of subsequent plots.
+Similarly, the colormap is applied against the currently specified range
+of data.
+
+An example configuration data file follows (without the **s). The user is
+invited to make a personal config file that is a better fit to an 
+individual environment.
+********File contents follows********
+#!/usr/bin/python3
+
+# Miscellaneous plot configuration data
+dpi = 100
+faceColor='black'
+windowWidth = 14.0
+windowHeight = 9.5
+xtraXlim = 10.0
+xtraYlim = 10.0
+pltStart = 0
+pltStop = 500000
+dotSize = 49.0
+********File contents preceeds********
+
+CUSTOM COLORMAP FILES:
+Two types of custom colormaps are supported: Linear Segmented; and, Color 
+List. A Matplotlib Linear Segmented colormap is often defined to generate a 
+gradual, interpolated transition from one color definition to the next. The 
+Color List colormap, on the other hand, has very sharp transitions.
+
+An example Linear Segmented colormap file follows (without the **s). 
+Several comments: The first entry in each line must be from 0.0 to 1.0, 
+inclusive, and specifies an anchor point for the RGB tuple that follows. 
+The anchor point for the first (last) line must be 0.0 (1.0). In this 
+example, the first two lines specify the range for a "neon" color; the last 
+two lines specify the range for a "pink" color. Note that there is a gap
+from 0.8 to 0.9. The Matplotlib software will generate the associated
+colormap, interpolating across the gap. Wider gaps will provide a more
+gradual transition. Although this example shows duplicate RGB tuples for
+two consecutive anchor points, it is not mandatory. For example, the
+line with anchor value 0.8 could be deleted. This still represents a
+valid colormap, but the "transition" area from a Neon color to the
+Pink color would be larger. In addition, blank lines in the text file
+are acceptable. Comments are full lines only and require a '#' character
+(without the quotes) in the first column.
+
+********File contents follows********
+# Comment lines (whole lines only) begin with '#'
+#
+# Neon
+(0.0, (0,255,200))
+(0.8, (0,255,200))
+# Pink
+(0.9, (255,100,255))
+(1.0, (255,100,255))
+********File contents preceeds********
+
+The definition of the Color List colormap consists of two lists: colors, and
+boundaries, or edges. The colors can either be a textual name, deeppink for 
+example, or a hex value, #ff1493. Although there are "only" about 140 color 
+names that are recognizable by Matplotlib libraries, there is no restriction 
+on the RGB hex values. That is, any six-digit hex value is allowable.
+As a result, all of the following are recognized:
+    rgbList = ['magenta', 'mediumorchid', 'springgreen'],
+    rgbList = ['#ff00ff', '#ba55d3', '#00ff7f'], and
+    rgbList = ['magenta', '#ba55d3', 'springgreen']
+
+For this program, the list of boundaries have several restrictions:
+1) The first boundary value must be 0.0; the last value must be 1.0
+2) The total number of boundary values must be one more than the number
+   of elements in the colors list.
+3) The boundary values must always be increasing from 0.0 to 1.0
+
+For example, given the colorlist example above, the following list of
+boundary values is allowable:
+    edgeList = [0.0, 0.20, 0.75, 1.0]
+
+Given these two lists, the program can generate the following colormap:
+    magenta from 0.0 to 0.20
+    mediumorchid from 0.20 to 0.75
+    springgreen from 0.75 to 1.0
+
+The color sections will abruptly start/stop at their boundary values.
+That is, there will not be a gradual transition/interpolation between 
+sections. Subsequently, this program will normalize the colormap to the
+elements of the set of ordered pairs being plotted.
+
+The "CustomMap" dropdown menu provides several additional capabilities. Note
+that these capabilities apply to both the Linear Segmented and Color List
+colormaps.
+1) "Edit existing": The user may load a custom cmap text file, edit the file,
+   and save the modified file for future use. (Note that the "Save" dialog 
+   will not prompt the user if the output file name is the same as the input
+   file name. That is, the input file will be overwritten.
+2) "Create new": The user may create a new custom colormap file. When enabled,
+   the resulting popup window allows the user to experiment with various 
+   RGB combinations and immediately view the result. Since this popup is
+   somewhat complex, "typical" usage scenarios follow.
+
+CUSTOM LINEAR SEGMENTED COLORMAP CREATION:
+Use the sliders to modify the values for the Anchor value, as well as 
+the Red, Green, Blue values. The sliders can be moved by pulling the slider
+or left-clicking to a side of the slider. Whenever a RGB slider is 
+modified the hex code will appear below the Red-Green-Blue display
+stripes, and the combined RGB color will appear in the box below that.
+
+When a full line has data set as desired (Anchor, Red, Green, and Blue 
+values set), click on the "Capture Line" button to transfer the values 
+to the text box. Repeat this as desired until a potential colormap is 
+defined. Or, enter/modify values in the text box by hand. Once a potential 
+map is completely defined, click on the "ColorBar" button on the bottom 
+to generate a colorbar. (Before generating a colorbar recall the first/last
+Anchor values must be 0.0 and 1.0) Use the "SaveTxt" button to save the 
+text box contents to a file. (Again, note that there is no warning if the
+user specifies an existing colormap name; the file will be overwritten.)
+Use the "ClearBox" to wipe the text box clean before starting on another 
+definition. The "Close" button will return the user to the main program.
+
+CUSTOM COLOR LIST COLORMAP CREATION:
+The controls for this colormap type are very similar to the Linear Segmented
+type described above. However, there are several important differences:
+1) Since this colormap is defined using two separate lists, there are two
+   separate text boxes, one for edge (or boundary) values, and one for the
+   rgb (or color) values.
+2) The "Grab Value" buttons for each text box will pull the values into
+   the box, similar to the "Capture Line" button used in the Linear Segmented
+   colormap creation.
+3) The "Color Names" button will allow the user to open an image of the
+   recognized color names and their associated hex value. This is included as
+   a "color name" help. The user still needs to populate the colors text box
+   using the sliders and "Grab Value" button, or type in the color name by
+   hand. Additional information may be obtained using an interactive Python
+   console as follows:
+   >>> import matplotlib.colors as mcolors
+   >>> cDict = mcolors.cnames
+   >>> print(cDict.keys())
+   This results in a text list of all acceptable color names (not listed 
+   here due to its size of about 140 names). Obtain the hex code of a 
+   colorname, like 'hotpink', as follows:
+   >>> cDict['hotpink']
+   This will display '#FF69B4'
+
+MISCELLANEOUS USAGE INFORMATION:
+This program is written for the Python3 environment. (See the first line
+in the source program.)
+
+The program was written and extensively tested on a Dell XPS-8700 desktop
+computer using Ubuntu 16.04 LTS 64-bit with Nvidia GeForce GT 635 graphics.
+Additional testing was performed on an HP laptop using Linux Mint 18.1 Serena
+64-bit with AMD Radeon R4/R5 Graphics. 
+
+"Save" Button:
+When an interesting plot is displayed, use the "Save" button on the plot 
+window to save the generated image plot as well as the associated 
+information that was used to generate the plot. 
+
+The actual plot will be saved in PNG format with a name that is a 
+concatenation of parts of the name of the raw data file and the name of 
+the colormap.
+
+A separate text file with ".rpd" (for "(r)aw (p)lot (d)atafile) extension 
+will contain explicit information about the files and options that went into
+generating the plot. For example, given the following entries:
+ Raw File Name       rawData_072920_130946.txt
+ Standard CMAP       viridis (Standard CMAP radio button was set)
+ Plot Start          1000
+ Plot Stop           500000
+ Dot Size            100
+
+This command will generate two files, one with ".png" extension and
+one with ".rpd" extension: rawData_072920_130946.viridis.png; 
+rawData_072920_130946.viridis.rpd. The rpd file will contain, in order: 
+full name of the input raw data file; the value of the Plot Start entry; 
+the value of the Plot Stop entry; the value of the Dot Size entry; and,
+colormap name or full name of the colormap file name if a custom map is 
+used; 
+
+"Dot Size" Advice:
+As stated above, the dot size is specified in "squared units". Given 
+this characteristic, one needs to increase the dot size by a factor of 
+four to increase the radius (or diameter) of the dot by a factor of 2. 
+The following Python program illustrates this:
+********File contents follows********
+#!/usr/bin/python3
+"""
+Simple program to explore the Matplotlib scatter plot dot size
+"""
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+import tkinter as tk
+
+dotSize1 = 64000
+dotSize2 = 16000
+
+plt.title('Dot Size', size=14)
+plt.scatter(0, 0, s=dotSize1, c = 'r')
+plt.scatter(0, 0, s=dotSize2, c = 'b')
+plt.grid(True)
+plt.show()
+********File contents preceeds********
+
+In general, smaller dot size entries result in a somewhat "dull" plot. 
+Larger sizes usually produce a "brighter" plot since each dot covers more
+area. Also, larger sizes can generate interesting patterns where many 
+points may overlap. Dot sizes of at least 49 or 64 or more are suggested. 
+(And, the values do not have to be perfect squares; just a habit of the 
+author.)
+
+PROGRAM ENVIRONMENT
+The current Raw Plot program was written for the Python3 environment on
+a Linux platform. 
+
+The program was written and extensively tested on a Dell XPS-8700 desktop
+computer using Ubuntu 16.04 LTS 64-bit with Nvidia GeForce GT 635 graphics. 
+Additional testing was performed on an HP laptop using Linux Mint 18.1 Serena 
+64-bit with AMD Radeon R4/R5 Graphics.
+
+A version that operates on the Windows 10 platform is under development.
+
+SOFTWARE ENVIRONMENT/DEPENDENCIES
+Python3
+Matplotlib
+Tkinter
+NumPy
+Pillow (PIL fork)
+
+"Program Style":
+The Raw Plot program is not written in object oriented style. At the time 
+of the original development, the author was 70 years old, with an extensive 
+programming career that included FORTRAN, BASIC, JOVIAL, Ada, Pascal, 
+C, Matlab, Mathematica, Linux/Unit shell programming, Perl, and 
+numerous assembly languages. Needless to say, when object oriented
+programming became popular, the author had decades of prior knowledge
+that made learning a new style...undesirable. However, learning Python, 
+Tkinter, and Matplotlib has been an interesting and rewarding experience.
+

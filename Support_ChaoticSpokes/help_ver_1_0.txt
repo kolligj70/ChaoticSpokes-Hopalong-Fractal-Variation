@@ -1,0 +1,290 @@
+
+CHAOTIC SPOKES HELP INFORMATION - This is the Help File for the Chaotic Spokes
+generator. See the Help->Overview pages for more information on the origin of
+the program, and the embedded algorithms.
+
+Although this file concentrates on the Configuration Data file items, the 
+following topics are covered:
+    Quick overview of the program
+    Running the program
+    Configuration Data
+    Program Environment
+    Execution Suggestions
+      
+QUICK OVERVIEW - The Chaotic Spokes generator was derived from the Martin 
+Attractor, or Hopalong, from Dr. Barry Martin that was described in a 1986 
+edition of Scientific America. The original Hopalong program operated on
+points in the xy-plane, "hopping" from one ordered pair to the next via
+the following coupled equations:
+    x_next = y-sign(x)*sqrt(abs(b*x-c))
+    y_next = a-x
+where: a, b, c are constants that drive the resulting pattern. The Chaotic 
+Spokes generator retains the core Hopalong algorithm, but provides a variety 
+of methods for "tweaking" the x and y outputs. This tweaking results in 
+spoke-like patterns that emerge from an initial (usually) Hopalong-like
+pattern. Small differences in the tweaking parameters often generate 
+completely different patterns of "spokes".
+
+CONFIGURATION DATA - This Chaotic Spokes generator differs from the original 
+Hopalong by modifying the "a", "b", "c" parameter(s) on each iteration 
+according to:
+   a = a*Ascale
+   b = b*Bscale
+   c = c*Cscale
+where Ascale, Bscale, Cscale are the "tweaking" factors. Small differences in
+the Ascale, Bscale, and/or Cscale parameters often generate completely
+different patterns of "spokes".
+
+In addition, there are several other capabilities, controlled by configuration
+file entries, that can cause substantial variations in the generated image.
+
+RUNNING THE PROGRAM
+Normal usage, from the command line is:
+   ./<python file name>
+
+An example configuration file follows. The example file is followed by 
+detailed explanations of the fields. Note that all entries in a configuration 
+file are assumed to be strings. The necessary conversions are performed 
+during program execution.
+
+********************** Example configuration file follows *********************
+#!/usr/bin/python3
+# -*- coding: utf-8 -*- 
+
+configurationData = {
+    # [Algorithm Data]
+    "ITERATIONS": ("Iterations", int(92000)),
+    "ASCALE": ("ascale", float(0.0)),
+    "BSCALE": ("bscale", float(5.92e-05)),
+    "CSCALE": ("cscale", float(8.95e-05)),
+    "TWEAKMINMAX": ("tweakMinMax", "int(0,70000)"),
+    "FREQ": ("freq", float(0.0)),
+    "A": ("a", float(6.0)),
+    "B": ("b", float(1.0)),
+    "C": ("c", float(30.0)),
+    "XYSTART": ("xyStart", "float(7.0,-6.0)"),
+    "ROTATE": ("rotate", float(53.7)),
+    # [Screen Data]
+    "WINDOWWIDTHHGT": ("windowWidthHgt", "float(14.0,9.5)"),
+    "USEPLTLIMPERCENT": "False",
+    "PLTLIMPERCENT": ("pltLimPercent", float(100.0)),
+    "XPLTMINMAX": ("xpltMinMax", "float(-1250.0,1250.0)"),
+    "YPLTMINMAX": ("ypltMinMax", "float(-1250.0,1250.0)"),
+    "DPI": ("DPI", float(100.0)),
+    "FACECOLOR": ("faceColor", "black"),
+    "DOTSIZE": ("dotSize", float(49.0)),
+    "PLTSTARTSTOP": ("plotStartStop", "int(0,100000)"),
+    # [Color Map]
+    "CMAPTYPE": "LSEG",
+    "CMAPSTD": ("cMapStd", "cool"),
+    "CMAPLSEG": ("cMapLseg", "bRed.cmS"),
+    "CMAPLIST": ("cMapList", ""),
+    # [File Data]
+    "PICBASE": "spokesTk",
+    "CONFIGBASE": "configDictTk",
+    "RAWSAVE": "True",
+    "RAWBASE": "rawData",
+}
+
+
+# xmin =  -1142.1
+# xmax =   1073.0
+# ymin =  -1067.0
+# ymax =   1148.1
+********************** Example configuration preceeds     *********************
+Several genral comments:
+1) The above configuration file was generated from a plot window by hitting 
+   the "Save" button in the lower-right corner of the window.
+2) When saving a run, the computed x and y min/max values are also saved.
+   These values are appended to the end of the saved configuration file to 
+   aid in the setting of XPLTMIN, XPLTMAX, YPLTMIN, YPLTMAX values on 
+   subsequent runs, i.e. zooming in or out.
+3) Several lines in the configuration file are pairs of numbers. These 
+   logically paired numbers are used to minimize the number of lines in the 
+   configuration file. This also reduces the size of the program GUI, 
+   allowing for future additions while still maintaining the basic GUI
+   format.
+
+ALGORITHM DATA:
+ITERATIONS - This is the number of times the coupled equations are calculated.
+ASCALE - The scaling, or tweaking, value for the "a" parameter.
+BSCALE - The scaling, or tweaking, value for the "b" parameter.
+CSCALE - The scaling, or tweaking, value for the "c" parameter.
+TWEAKMINMAX - The iteration on which parameter scaling, or tweaking, will
+    start/stop. Note that a very large value for the MAX basically disables 
+    this capability.
+FREQ - Frequency (hz) of a sinusoidal adjustment of the "b" parameter. This 
+    parameter essentially modifies the amount of BSCALE that is applied. 
+    The sinusoid is applied across the full set of iterations
+    in the range of TWEAKMIN to TWEAKMAX. A FREQ value of 0.0 disables 
+    this effect. It is recommended that low values be used for FREQ. (Higher
+    FREQ values probably make this effect difficult to visualize.)
+    For example, setting FREQ to 0.5 would slowly increase the adjustment 
+    from zero to one and back to zero. A FREQ value of 1.0 would increase 
+    the adjustment from zero to one, back to zero, down to -1.0, and finally 
+    back to zero across the full number of iterations.
+A, B, C - These are the parameters from the original Hopalong generator. (See
+    introductory paragraphs above.)
+XYSTART - Starting values for x, y: i.e. the original point in the 
+    xy-plane is at (XSTART,YSTART) instead of (0,0). Small changes from (0,0) 
+    can often generate different spoke patterns.
+ROTATE - (x,y) rotation angle in degrees. The specified rotation angle is 
+    converted to radians, and divided by the number of ITERATIONS to form an 
+    incremental angle. At each new calculation of (x,y), the point is rotated 
+    by the incremental angle. Positive rotations are counter-clockwise from
+    the positive x-axis which points horizontally to the right. Set ROTATE
+    to 0.0 to disable this effect.
+
+SCREEN DATA:
+WINDOWWIDTHHGT - The graphics window size in inches.
+XPLTMINMAX, YPLTMINTMAX - The plot limits of the calculated x, y values. 
+    These values are used to zoom into/away from the resulting image. 
+DPI - The number of dots per inch used in the plot window.
+FACECOLOR - The background color of the image window. This can be a "standard"
+    color word, a one-letter abbreviation, or even a hex RGB value like
+    #ff00ff (which is a bright magenta). Additional information about 
+    specifying individual colors is available on the Matplotlib site; 
+    search for "Color Demo".
+DOTSIZE - The scatter plot marker size in units**2.
+PLTSTARTSTOP - These parameters define min/max iterations to start/stop the 
+    plotting of points. That is, this plots a subset of (x,y) points within
+    the full set of values previously specified by the range 0->ITERATIONS. 
+    The calculations are still performed for the full range 0->ITERATIONS, 
+    but only iterations in the range PLTMIN->PLTMAX are plotted to the screen. 
+
+COLOR MAPS:
+CMAPTYPE - Defines the type of colormap to use in the plot. "STD" is a 
+    Standard Matplotlib colormap (jet, or spring, or cool, for example). 
+    "LSEG" indicates a Linearly Segmented colormap defined by the user. 
+    Files of this type are named with a "cmS" file extension. "LIST" indicaes
+    a user-defined colormap from a Color List. Files of this type are named
+    with a "cmL" file extension. 
+CMAPSTD - This is the name of a Standard colormap.
+CMAPLSEG - This is the name of a Linearly Segmented colormap.
+CMAPLIST - This is the name of a colormap from Color List.
+    A radio button specifies whether the color map is selected from the 
+    standard named Matplotlib maps, a Linearly Segmented user-defined 
+    colormap, or a user-defined colormap from Color List.
+
+FILE DATA:
+PICBASE - The base file name of a saved picture. The full image file name
+    is the concatenation of PICBASE + date and time + ".png". All saved
+    images are in PNG format.
+CONFIGBASE - The base file name of the configuration data file associated
+    with a saved picture. The full file name is the concatenation of
+    CONFIGBASE + date and time + ".py". All saved configuration files
+    are text files with the "py" extension.
+RAWSAVE - A True value for this boolean enables writing the raw x-y data
+    to a text file. This allows offline manipulation of the data, perhaps
+    applying a different colormap, or looking for patterns in the data.
+    A checkbox on the GUI is provided to change the state of this flag.
+RAWBASE	- This is the base file name of the raw data file that is saved
+    based on the state of the RAWSAVE boolean described above. The full
+    file name is the concatenation of RAWBASE + data and time + ".txt"
+    All raw data files are two columns of text data with the x-values 
+    in the first column and the associated y-values in the second column
+
+
+Additional Color Map Notes:
+Go to matplotlib.org and search on "colormaps" for information on the
+standard colormaps. A listing of the standard available maps may be 
+obtained interactively:
+   >>> from pylab import *
+   >>> maps=[m for m in cm.datad]
+   >>> maps
+
+There are two types of custom colormaps: Linear Segmented; and, Color List.
+A Matplotlib Linear Segmented colormap is often defined to generate a 
+gradual, interpolated transition from one color definition to the next. The 
+Color List colormap, on the other hand, has very sharp transitions.
+
+An example Linear Segmented colormap file follows (without the **s). 
+Several comments: The first entry in each line must be from 0.0 to 1.0, 
+inclusive, and specifies an anchor point for the RGB tuple that follows. 
+The anchor point for the first (last) line must be 0.0 (1.0). In this 
+example, the first two lines specify the range for a "neon" color; the last 
+two lines specify the range for a "pink" color. Note that there is a gap
+from 0.8 to 0.9. The Matplotlib software will generate the associated
+colormap, interpolating across the gap. Wider gaps will provide a more
+gradual transition. Although this example shows duplicate RGB tuples for
+two consecutive anchor points, it is not mandatory. For example, the
+line with anchor value 0.8 could be deleted. This still represents a
+valid colormap, but the "transition" area from a Neon color to the
+Pink color would be larger. In addition, blank lines in the text file
+are acceptable. Comments are full lines only and require a '#' character
+(without the quotes) in the first column.
+
+********File contents follows********
+# Comment line (whole lines only) begin with '#'
+#
+# Neon
+(0.0, (0,255,200))
+(0.8, (0,255,200))
+# Pink
+(0.9, (255,100,255))
+(1.0, (255,100,255))
+********File contents preceeds********
+
+The definition of the Color List colormap consists of two lists: colors, and
+boundaries, or edges. The colors can either be a textual name, deeppink for 
+example, or a hex value, #ff1493. Although there are "only" about 140 color 
+names that are recognizable by Matplotlib libraries, there is no restriction 
+on the RGB hex values. That is, any six-digit hex value is allowable.
+As a result, all of the following are recognized:
+    rgbList = ['magenta', 'mediumorchid', 'springgreen'],
+    rgbList = ['#ff00ff', '#ba55d3', '#00ff7f'], and
+    rgbList = ['magenta', '#ba55d3', 'springgreen']
+
+For this program, the list of boundaries have several restrictions:
+1) The first boundary value must be 0.0; the last value must be 1.0
+2) The total number of boundary values must be one more than the number
+   of elements in the colors list.
+3) The boundary values must always be increasing from 0.0 to 1.0
+
+For example, given the colorlist example above, the following list of
+boundary values is allowable:
+    edgeList = [0.0, 0.20, 0.75, 1.0]
+
+Given these two lists, the program can generate the following colormap:
+    magenta from 0.0 to 0.20
+    mediumorchid from 0.20 to 0.75
+    springgreen from 0.75 to 1.0
+
+The color sections will abruptly start/stop at their boundary values.
+That is, there will not be a gradual transition/interpolation between 
+sections. 
+
+The companion rawPlotTk.py program has the ability to create and visualize 
+both kinds of custom colormaps, including the generation of a colorbar. See
+the rawPlotTk.py help for additional details.
+
+PROGRAM ENVIRONMENT
+The current Chaotic Spokes program was written for the Python3 environment on
+a Linux platform. 
+
+The program was written and extensively tested on a Dell XPS-8700 desktop
+computer using Ubuntu 16.04 LTS 64-bit with Nvidia GeForce GT 635 graphics. 
+Additional testing was performed on an HP laptop using Linux Mint 18.1 Serena 
+64-bit with AMD Radeon R4/R5 Graphics.
+
+A version that operates on the Windows 10 platform is under development.
+
+DEPENDENCIES
+Python3
+Matplotlib
+Tkinter
+NumPy
+Pillow (PIL fork)
+
+"Program Style":
+The Chaotic Spokes program is not written in object oriented style. At the 
+time of the original development, the author was 70 years old, with an 
+extensive programming career that included FORTRAN, BASIC, JOVIAL, Ada, 
+Pascal, C, Matlab, Mathematica, Linux/Unit shell programming, Perl, and 
+numerous assembly languages. Needless to say, when object oriented
+programming became popular, the author had decades of prior knowledge
+that made learning a new style...undesirable. However, learning Python, 
+Tkinter, and Matplotlib has been an interesting and rewarding experience.
+
+
+

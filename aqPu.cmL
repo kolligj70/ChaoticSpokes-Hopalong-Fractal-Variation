@@ -1,0 +1,4 @@
+# Comment line (whole lines only) begin with '#'
+edgeList = [0.00, 0.9, 1.00]
+# Aqua-Purple
+rgbList = [#5affff, #ff58ff]
