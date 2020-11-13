@@ -1,2 +1,5 @@
+ 1.1 - Multiple try...except for NavigationToolbar2Tk/Agg, and canvas.show vs 
+         canvas.draw() for Windows compatibility.
+         Add edgecolor to scatter calls.
  1.0 - Initial release
 

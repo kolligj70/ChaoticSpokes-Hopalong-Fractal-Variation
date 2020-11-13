@@ -259,15 +259,15 @@ both kinds of custom colormaps, including the generation of a colorbar. See
 the rawPlotTk.py help for additional details.
 
 PROGRAM ENVIRONMENT
-The current Chaotic Spokes program was written for the Python3 environment on
-a Linux platform. 
+The current Chaotic Spokes program was originally written for the Python3
+environment on a Linux platform. Modifications have been made for the
+program to work under Windows 10.
 
 The program was written and extensively tested on a Dell XPS-8700 desktop
 computer using Ubuntu 16.04 LTS 64-bit with Nvidia GeForce GT 635 graphics. 
 Additional testing was performed on an HP laptop using Linux Mint 18.1 Serena 
-64-bit with AMD Radeon R4/R5 Graphics.
-
-A version that operates on the Windows 10 platform is under development.
+64-bit with AMD Radeon R4/R5 Graphics. Finally, the program was tested
+on the same HP laptop using Windows 10.
 
 DEPENDENCIES
 Python3

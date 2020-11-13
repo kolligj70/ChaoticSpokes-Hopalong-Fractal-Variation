@@ -1,10 +1,13 @@
 # Chaotic Spokes Program
 
 The Chaotic Spokes generator was derived from the Martin Attractor, or Hopalong, from Dr. Barry Martin that was described in a 1986 edition of Scientific America. The original Hopalong program operated on points in the xy-plane, "hopping" from one ordered pair to the next via the following coupled equations:
+
 ![](readme/Equation_1.png)
+
 where a, b, and c are constants. The Chaotic Spokes generator retains the core Hopalong algorithm, but provides a variety of methods for "tweaking" the x and y calculations. This tweaking results in spoke-like patterns that emerge from an initial (usually) Hopalong-like pattern. Small differences in the tweaking parameters often generate completely different patterns of "spokes". 
 
 A primary tweak is the modification of the a, b, and c parameters that are constants in the original Hopalong calculations:
+
 ![](readme/Equation_2.png)
 
 Additional features that my be manipulated via an loadable  Configuration Data dictionary, and/or through the program GUI, include: 
@@ -21,6 +24,7 @@ Additional features that my be manipulated via an loadable  Configuration Data d
 -  Ability to save an image, its raw data, and its data parameters
  
  A picture of the main screen is shown below:
+
  ![ ](readme/mainSpokes.png  "Chaotic Spokes Main Screen")
  
  The following is the rendering of a legacy Hopalong image. Note the parameters attached to the image.
@@ -60,7 +64,7 @@ The current Chaotic Spokes program was written for the Python3 environment on a 
 
 The program was written and extensively tested on a Dell XPS-8700 desktop computer using Ubuntu 16.04 LTS 64-bit with Nvidia GeForce GT 635 graphics. Additional testing was performed on an HP laptop using Linux Mint 18.1 Serena 64-bit with AMD Radeon R4/R5 Graphics.
 
-A version that operates on the Windows 10 platform is under development.
+A version that operates on the Windows 10 platform has also been created and tested on the same laptop.
 
 # Dependencies
 Python3
@@ -70,7 +74,7 @@ NumPy
 Pillow (PIL fork)  
 
 ## Installation/Usage
-Download the package to your desired Install Directory and unzip the file. The Chaotic Spokes program can then be run by opening a terminal, changing to your Install Directory, and entering the following:
+Download the package to your desired Install Directory and unzip the file. The Chaotic Spokes program can then be run on a Linux platform by opening a terminal, changing to your Install Directory, and entering the following:
 
 	python3 ChaoticSpokesTk.py
 	
@@ -78,6 +82,10 @@ Alternatively, make the ChaoticSpokesTk.py executable, and run the script direct
 
 	chmod +x ./ChaoticSpokesTk.py
 	./ChaoticSpokesTk.py
+
+On the Windows 10 platform, first open a PowerShell window, change to your Install Directory and enter:
+
+	python ChaoticSpokesTk.py
 
 The same steps apply to the rawPlotTk.py script.
 

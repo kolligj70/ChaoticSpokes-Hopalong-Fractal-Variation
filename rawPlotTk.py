@@ -17,7 +17,12 @@ import matplotlib.colors as mc
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg
+
+try:
+    from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg
+except ImportError:
+    from matplotlib.backends.backend_tkagg import \
+            NavigationToolbar2Tk as NavigationToolbar2TkAgg
 
 from PIL import ImageTk
 
@@ -263,7 +268,8 @@ def makePlot():
         # Print colormap name
         if (debugDict["debug2"]):
             print("\n", cmFileName)
-        figPlot.scatter(xx, yy, s=dotSize, c=xxt, cmap=cmapStd)
+        figPlot.scatter(xx, yy, s=dotSize, c=xxt, cmap=cmapStd, 
+						edgecolor='black')
     elif (varCmapColors.get() == "LSEG"):
         # Here to generate Linear Segmented colormap and apply to plot
         divisor = 255.0
@@ -291,7 +297,8 @@ def makePlot():
         normalize = mc.Normalize(vmin=0, vmax=len(xx))
         # Generate colormap and plot
         cmap = mc.LinearSegmentedColormap.from_list("", colorList)
-        figPlot.scatter(xx, yy, s=dotSize, c=normalize(xxt), cmap=cmap)
+        figPlot.scatter(xx, yy, s=dotSize, c=normalize(xxt), cmap=cmap, 
+					    edgecolor='black')
 
     elif (varCmapColors.get() == "LIST"):
         # Here to generate Color List colormap and apply to plot
@@ -346,7 +353,8 @@ def makePlot():
         cmap = mpl.colors.ListedColormap(rgbListStr)
         norm = mpl.colors.BoundaryNorm(bounds, cmap.N, clip=True)
 
-        figPlot.scatter(xx, yy, s=dotSize, c=xxt, cmap=cmap, norm=norm)
+        figPlot.scatter(xx, yy, s=dotSize, c=xxt, cmap=cmap, norm=norm, 
+					    edgecolor='black')
     else:
         print("makePlot: unknown colormap type")
         return
@@ -380,7 +388,10 @@ def makePlot():
             outfile.write(fullText)
 
     canvas = FigureCanvasTkAgg(f, master=window)
-    canvas.show()
+    try:
+        canvas.show()
+    except AttributeError:
+        canvas.draw()
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
     # Define Save button for plot window
@@ -391,7 +402,10 @@ def makePlot():
     toolbar = NavigationToolbar2TkAgg(canvas, window)
     toolbar.update()
     canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-    canvas.show()
+    try:
+        canvas.show()
+    except AttributeError:
+        canvas.draw()
 
 
 # Load raw data from file

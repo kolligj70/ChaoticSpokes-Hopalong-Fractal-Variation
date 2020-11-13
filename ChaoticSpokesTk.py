@@ -21,7 +21,13 @@ import matplotlib as mpl
 import matplotlib.colors as mc
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg
+
+try:
+    from matplotlib.backends.backend_tkagg import NavigationToolbar2TkAgg
+except ImportError:
+    from matplotlib.backends.backend_tkagg import \
+            NavigationToolbar2Tk as NavigationToolbar2TkAgg
+
 from matplotlib.figure import Figure
 
 import numpy as np
@@ -507,7 +513,8 @@ configurationData = {
     # Generate plot image
     if (varCmapType.get() == "STD"):
         # Plot using Standard colormap
-        figPlot.scatter(xx, yy, s=dotSize, c=xxt, cmap=cmapStdName)
+        figPlot.scatter(xx, yy, s=dotSize, c=xxt, cmap=cmapStdName, 
+                edgecolor='black')
     elif (varCmapType.get() == "LSEG"):
         # Plot using custom Linear Segmented colormap
         divisor = 256.0
@@ -538,7 +545,8 @@ configurationData = {
 
         normalize = mc.Normalize(vmin=0, vmax=len(xx))
         cmap = mc.LinearSegmentedColormap.from_list("", colorList)
-        figPlot.scatter(xx, yy, s=dotSize, c=normalize(xxt), cmap=cmap)
+        figPlot.scatter(xx, yy, s=dotSize, c=normalize(xxt), cmap=cmap, 
+                edgecolor='black')
     elif (varCmapType.get() == "LIST"):
         # Plot using custom Color List colormap
         if (debugDict["debug5"]):
@@ -585,14 +593,19 @@ configurationData = {
         cmap = mpl.colors.ListedColormap(rgbListStr)
         norm = mpl.colors.BoundaryNorm(bounds, cmap.N, clip=True)
 
-        figPlot.scatter(xx, yy, s=dotSize, c=xxt, cmap=cmap, norm=norm)
+        figPlot.scatter(xx, yy, s=dotSize, c=xxt, cmap=cmap, norm=norm,
+                edgecolor='black')
     else:
         print("Colormap type not recognized. Exiting.")
         return
 
     # Create canvas to hold plot
     canvas = FigureCanvasTkAgg(f, master=window)
-    canvas.show()
+
+    try:
+        canvas.show()
+    except AttributeError:
+        canvas.draw()
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
 
     # Create image Save button
@@ -603,7 +616,10 @@ configurationData = {
     toolbar.update()
 
     canvas._tkcanvas.pack(side=TOP, fill=BOTH, expand=1)
-    canvas.show()
+    try:
+        canvas.show()
+    except AttributeError:
+        canvas.draw()
 
 
 # Make initial GUI form
